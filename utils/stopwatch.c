@@ -83,10 +83,10 @@ int Stopwatch_init(){
  * Start/Stop the Timer
  */
 void Stopwatch_start(){
-    timer_start_value = Timer_A_getCounterValue(TIMER_A1_BASE);
-    DPRINTF("Stopwatch_start::Enter - start value = %d\n", timer_start_value);
+    //DPRINTF("Stopwatch_start::Enter - start value = %d\n", timer_start_value);
 
-    //DPRINTF("Stopwatch_start::Enter\n");
+    Timer_A_clear (TIMER_A1_BASE);
+    timer_start_value = Timer_A_getCounterValue(TIMER_A1_BASE);
     Timer_A_startCounter(TIMER_A1_BASE, TIMER_A_CONTINUOUS_MODE);
     //__bis_SR_register(LPM0_bits + GIE); //Enter LPM0, enable interrupts
     __enable_interrupt();
@@ -111,48 +111,6 @@ uint16_t Stopwatch_getElapsedClockCycles(){
     return Timer_A_getCounterValue(TIMER_A1_BASE) - timer_start_value;
 }
 
-
-
-/*
- * Inteerupt Service Routine
- * Executes the callback passed during initialization
- */
-/*
-#pragma vector=TIMER1_A0_VECTOR  // timer 0 interupt vector
-__interrupt void Stopwatch_ISR(void){ // interupt function
-
-    uint16_t compVal = Timer_A_getCaptureCompareCount(TIMER_A1_BASE,
-                TIMER_A_CAPTURECOMPARE_REGISTER_0)
-                + compare_value;
-
-    // increment counters
-    swObj.ms++;
-    if (swObj.ms >= 100){
-        swObj.s++;
-        swObj.ms=0;
-    }
-
-    //Add Offset to CCR0
-    Timer_A_setCompareValue(TIMER_A1_BASE,
-        TIMER_A_CAPTURECOMPARE_REGISTER_0,
-        compVal
-        );
-}
-*/
-
-
-/*
- * get clock cycles
- * ms : period (milliseconds)
- * clk : clock frequency
- * p : prescaler value
- */
-uint32_t calcClockCycles(uint16_t ms, uint32_t clk, uint16_t p){
-    //uint32_t curSMCLK = CS_getSMCLK();
-    float T = (float) ms / (float)TEN_POW_NEG_3; // in seconds
-    uint32_t cc =  T * ((float)clk/(float)p);
-    return cc;
-}
 
 
 uint16_t calcRealTime(uint16_t cc){

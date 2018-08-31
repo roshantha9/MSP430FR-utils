@@ -27,6 +27,7 @@ int cnt=0;
 void testTimerPeriodic(void);
 void testTimerPeriodic_ISR(void);
 void testStopwatch(void);
+void testStopwatch_v2(void);
 
 void boardSetup(void);
 void debugLEDSetup(void);
@@ -52,10 +53,25 @@ void testTimerPeriodic_ISR(){
     //printf("--testTimerPeriodic_ISR:: Exit\n");
 }
 
+// short test version
 void testStopwatch(){
     printf("testStopwatch:: Enter\n");
-    //Stopwatch_init();
-    //Stopwatch_start();
+    Stopwatch_init();
+    Stopwatch_start();
+
+    __delay_cycles(65534-27);
+
+    Stopwatch_stop();
+
+    uint16_t elapsed_time = Stopwatch_getElapsedClockCycles();
+    printf("testStopwatch:: elapsed time: %u\n", elapsed_time);
+
+    printf("testStopwatch:: Exit\n");
+}
+
+// long test version
+void testStopwatch_v2(){
+    printf("testStopwatch_v2:: Enter\n");
 
     Timer_A_initContinuousModeParam initContParam = {0};
     initContParam.clockSource = TIMER_A_CLOCKSOURCE_SMCLK;
@@ -65,8 +81,7 @@ void testStopwatch(){
     initContParam.startTimer = false;
     Timer_A_initContinuousMode(TIMER_A1_BASE, &initContParam);
 
-    //__disable_interrupt();
-
+    Timer_A_clear (TIMER_A1_BASE);
     uint16_t timer_start_value = Timer_A_getCounterValue(TIMER_A1_BASE);
     Timer_A_startCounter(TIMER_A1_BASE, TIMER_A_CONTINUOUS_MODE);
 
@@ -75,12 +90,9 @@ void testStopwatch(){
     Timer_A_stop(TIMER_A1_BASE);
     uint16_t elapsed_time = Timer_A_getCounterValue(TIMER_A1_BASE) - timer_start_value;
 
+    printf("testStopwatch_v2:: elapsed time: %d, timer_start_value=%d\n", elapsed_time, timer_start_value);
 
-    //Stopwatch_stop();
-    //printf("testStopwatch:: elapsed time: %d\n", Stopwatch_getElapsedTime());
-    printf("testStopwatch:: elapsed time: %d\n", elapsed_time);
-
-    printf("testStopwatch:: Exit\n");
+    printf("testStopwatch_v2:: Exit\n");
 }
 
 
@@ -104,13 +116,6 @@ void clockSetup(){
     //configure MCLK, SMCLK to be source by DCOCLK
     CS_initClockSignal(CS_SMCLK,CS_DCOCLK_SELECT,CS_CLOCK_DIVIDER_8);
     CS_initClockSignal(CS_MCLK,CS_DCOCLK_SELECT,CS_CLOCK_DIVIDER_8);
-
-    /*
-    // set master clock frequency to 8MHz
-    CS_setDCOFreq(CS_DCORSEL_0, CS_DCOFSEL_6);
-    // set smclk
-    CS_initClockSignal( CS_SMCLK, CS_DCOCLK_SELECT, CS_CLOCK_DIVIDER_1 );
-    */
 
     // report clock freqs
     printf("SMLK= %lu ; MCLK= %lu ; ACLK=%lu \n", CS_getSMCLK(), CS_getMCLK(), CS_getACLK());

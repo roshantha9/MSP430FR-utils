@@ -42,7 +42,6 @@ extern uint16_t Stopwatch_getElapsedTime(void);
 
 
 // private functions
-uint32_t calcClockCycles(uint16_t ms, uint32_t clk, uint16_t p);
 uint16_t calcRealTime(uint16_t cc);
 
 
