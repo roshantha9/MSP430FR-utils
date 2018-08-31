@@ -12,6 +12,7 @@
 #include <msp430.h>
 
 
+#define TIMER_PERIORIC_ENABLE        0
 
 #define DIVIDER                       TIMER_A_CLOCKSOURCE_DIVIDER_8 // used in the timer config
 #define PRESCALER                     8                             // used to calc compare value

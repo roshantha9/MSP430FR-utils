@@ -87,9 +87,9 @@ void TimerPeriodic_stop(){
     __disable_interrupt();
 }
 
-
-#pragma vector=TIMER1_A0_VECTOR  // timer 0 interupt vector
-__interrupt void TimerPeriodic_ISR(void){ // interupt function
+#if TIMER_PERIORIC_ENABLE
+#pragma vector=TIMER1_A0_VECTOR  // timer 0 interrupt vector
+__interrupt void TimerPeriodic_ISR(void){ // interrupt function
 
     uint16_t compVal = Timer_A_getCaptureCompareCount(TIMER_A1_BASE,
                 TIMER_A_CAPTURECOMPARE_REGISTER_0)
@@ -103,7 +103,7 @@ __interrupt void TimerPeriodic_ISR(void){ // interupt function
         compVal
         );
 }
-
+#endif
 
 
 /*

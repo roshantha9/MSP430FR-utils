@@ -11,40 +11,32 @@
 #include "stdint.h"
 #include <msp430.h>
 
+#define SW_ENABLE              1
 
-
+// you can use the divider/prescaler to control the granularity of the stopwatch
 #define SW_DIVIDER                    TIMER_A_CLOCKSOURCE_DIVIDER_1 // used in the timer config
 #define SW_PRESCALER                  1                             // used to calc compare value
+
+#define TIMER_MAX_COMPARE             0xFFFF
+
 #define TEN_POW_NEG_3                 1.0/1000.0
-#define TP_MAX_COMPARE                (0xFFFF-1)
-#define TP_MIN_COMPARE                0x0002
+#define TEN_POW_SIX                   1000000
 
 
+#define TICK_OVERHEAD                 0 // function call overhead (assuming 1MHz SMCLK)
 
-
-typedef struct stopwatch {
-    // timer register count
-    uint16_t reg_count;
-
-    // real time units
-    uint16_t s;
-    uint16_t ms;
-    //uint16_t us; // 16MHz clock may not be fast enough;
-} Stopwatch;
-
-
+#define SW_TIMER_BASE                 TIMER_A1_BASE
+#define SW_TIMER_VECTOR               TIMER1_A0_VECTOR
 
 // public functions
 extern int Stopwatch_init(void);
 extern void Stopwatch_start(void);
 extern void Stopwatch_stop(void);
-extern uint16_t Stopwatch_getElapsedTime(void);
+extern void Stopwatch_reset(void);
+extern uint32_t Stopwatch_getElapsedClockCycles(void);
+//extern uint32_t Stopwatch_getElapsedRealTime(void); // in ms
 
-
-// private functions
-uint16_t calcRealTime(uint16_t cc);
-
-
+uint32_t Stopwatch_getClockFreq(void);
 
 
 /* debug printing */

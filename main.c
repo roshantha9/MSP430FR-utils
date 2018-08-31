@@ -3,8 +3,19 @@
 #include <msp430.h> 
 #include "driverlib.h"
 
-#include "utils/timer_periodic.h"
-#include "utils/stopwatch.h"
+
+// test bench options
+#define TB_TIMER            0 // testbench timer
+#define TB_STOPWATCH        1 // testbench stopwatch
+
+#if TB_TIMER
+    #include "utils/timer_periodic.h"
+#endif
+
+#if TB_STOPWATCH
+    #include "utils/stopwatch.h"
+#endif
+
 
 /*******************************************************
  * DEFINES
@@ -13,6 +24,8 @@
 #define LED2        BIT1
 #define LED_OUT     P1OUT
 #define LED_DIR     P1DIR
+
+
 
 
 /*******************************************************
@@ -24,10 +37,12 @@ int cnt=0;
 /*******************************************************
  * FUNC DEFS
  *******************************************************/
+#if TB_TIMER
 void testTimerPeriodic(void);
 void testTimerPeriodic_ISR(void);
+#endif
+
 void testStopwatch(void);
-void testStopwatch_v2(void);
 
 void boardSetup(void);
 void debugLEDSetup(void);
@@ -38,6 +53,7 @@ void clockSetup(void);
 /*******************************************************
  * TESTBENCH: Timer_Periodic
  *******************************************************/
+#if TB_TIMER
 void testTimerPeriodic(){
     printf("testTimerPeriodic:: Enter\n");
     TimerPeriodic_init(1, &testTimerPeriodic_ISR);
@@ -52,50 +68,57 @@ void testTimerPeriodic_ISR(){
 
     //printf("--testTimerPeriodic_ISR:: Exit\n");
 }
+#endif
 
-// short test version
+/*******************************************************
+ * TESTBENCH: Stopwatch
+ *******************************************************/
+#if TB_STOPWATCH
 void testStopwatch(){
     printf("testStopwatch:: Enter\n");
     Stopwatch_init();
+
+    // short delay
     Stopwatch_start();
-
-    __delay_cycles(65534-27);
-
+    __delay_cycles(50);
     Stopwatch_stop();
+    printf("testStopwatch:: elapsed clock cycles: %lu\n", Stopwatch_getElapsedClockCycles());
+    Stopwatch_reset();
 
-    uint16_t elapsed_time = Stopwatch_getElapsedClockCycles();
-    printf("testStopwatch:: elapsed time: %u\n", elapsed_time);
+    // med delay
+    Stopwatch_start();
+    __delay_cycles(5000);
+    Stopwatch_stop();
+    printf("testStopwatch:: elapsed clock cycles: %lu\n", Stopwatch_getElapsedClockCycles());
+    Stopwatch_reset();
+
+    // long delay
+    Stopwatch_start();
+    __delay_cycles(50000);
+    Stopwatch_stop();
+    printf("testStopwatch:: elapsed clock cycles: %lu\n", Stopwatch_getElapsedClockCycles());
+    Stopwatch_reset();
+
+
+    // very-long delay
+    Stopwatch_start();
+    __delay_cycles(100000);
+    Stopwatch_stop();
+    printf("testStopwatch:: elapsed clock cycles: %lu\n", Stopwatch_getElapsedClockCycles());
+    Stopwatch_reset();
+
+
+    // very-long delay
+    Stopwatch_start();
+    __delay_cycles(500000);
+    Stopwatch_stop();
+    printf("testStopwatch:: elapsed clock cycles: %lu\n", Stopwatch_getElapsedClockCycles());
+    Stopwatch_reset();
+
 
     printf("testStopwatch:: Exit\n");
 }
-
-// long test version
-void testStopwatch_v2(){
-    printf("testStopwatch_v2:: Enter\n");
-
-    Timer_A_initContinuousModeParam initContParam = {0};
-    initContParam.clockSource = TIMER_A_CLOCKSOURCE_SMCLK;
-    initContParam.clockSourceDivider = TIMER_A_CLOCKSOURCE_DIVIDER_1; //granularity
-    initContParam.timerInterruptEnable_TAIE = TIMER_A_TAIE_INTERRUPT_DISABLE;
-    initContParam.timerClear = TIMER_A_DO_CLEAR;
-    initContParam.startTimer = false;
-    Timer_A_initContinuousMode(TIMER_A1_BASE, &initContParam);
-
-    Timer_A_clear (TIMER_A1_BASE);
-    uint16_t timer_start_value = Timer_A_getCounterValue(TIMER_A1_BASE);
-    Timer_A_startCounter(TIMER_A1_BASE, TIMER_A_CONTINUOUS_MODE);
-
-    __delay_cycles(50000);
-
-    Timer_A_stop(TIMER_A1_BASE);
-    uint16_t elapsed_time = Timer_A_getCounterValue(TIMER_A1_BASE) - timer_start_value;
-
-    printf("testStopwatch_v2:: elapsed time: %d, timer_start_value=%d\n", elapsed_time, timer_start_value);
-
-    printf("testStopwatch_v2:: Exit\n");
-}
-
-
+#endif
 
 /*******************************************************
  * SETUP: board, debug LED, clocks, etc.
