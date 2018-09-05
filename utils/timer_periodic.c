@@ -87,7 +87,7 @@ void TimerPeriodic_stop(){
     __disable_interrupt();
 }
 
-#if TIMER_PERIORIC_ENABLE
+#if TIMER_PERIODIC_ENABLE
 #pragma vector=TIMER1_A0_VECTOR  // timer 0 interrupt vector
 __interrupt void TimerPeriodic_ISR(void){ // interrupt function
 

@@ -3,10 +3,9 @@
 #include <msp430.h> 
 #include "driverlib.h"
 
+#include "config.h"
 
-// test bench options
-#define TB_TIMER            0 // testbench timer
-#define TB_STOPWATCH        1 // testbench stopwatch
+
 
 #if TB_TIMER
     #include "utils/timer_periodic.h"
@@ -14,6 +13,11 @@
 
 #if TB_STOPWATCH
     #include "utils/stopwatch.h"
+#endif
+
+
+#if TB_BUTTON
+    #include "utils/button.h"
 #endif
 
 
@@ -42,7 +46,14 @@ void testTimerPeriodic(void);
 void testTimerPeriodic_ISR(void);
 #endif
 
+#if TB_STOPWATCH
 void testStopwatch(void);
+#endif
+
+#if TB_BUTTON
+void testButton_S1(void);
+void testButton_S1_ISR(void);
+#endif
 
 void boardSetup(void);
 void debugLEDSetup(void);
@@ -120,6 +131,23 @@ void testStopwatch(){
 }
 #endif
 
+
+/*******************************************************
+ * TESTBENCH: Button
+ *******************************************************/
+#if TB_BUTTON
+void testButton_S1(){
+    Button_S1_init(&testButton_S1_ISR);
+}
+
+void testButton_S1_ISR(){
+    LED_OUT ^= LED1 + LED2; // Toggle the LEDs
+    P6OUT ^= BIT0; // toggle port output
+}
+#endif
+
+
+
 /*******************************************************
  * SETUP: board, debug LED, clocks, etc.
  *******************************************************/
@@ -193,10 +221,13 @@ int main(void)
     outputClocksToPins();
 
 
-    //testTimerPeriodic(); // test the periodic timer
+    //testTimerPeriodic(); // test the periodic timer module
+    //testStopwatch();      // test the stopwatch module
+    testButton_S1();
 
-    testStopwatch();
 
+    /* Disable the GPIO power-on default high-impedance mode. */
+    PMM_unlockLPM5();
 
 
 	//For debugger
