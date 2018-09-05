@@ -128,3 +128,27 @@ uint8_t getPrescaler(uint16_t p, uint32_t clk){
     return 1;
 }
 
+
+
+/*******************************************************
+ * TESTBENCH: Timer_Periodic
+ *******************************************************/
+#if TB_TIMER
+void testTimerPeriodic(){
+    printf("testTimerPeriodic:: Enter\n");
+    TimerPeriodic_init(1, &testTimerPeriodic_ISR);
+    TimerPeriodic_start();
+}
+
+void testTimerPeriodic_ISR(){
+    //printf("--testTimerPeriodic_ISR:: Enter\n");
+
+    LED_OUT ^= LED1 + LED2; // Toggle the LEDs
+    P6OUT ^= BIT0; // toggle port output
+
+    //printf("--testTimerPeriodic_ISR:: Exit\n");
+}
+#endif
+
+
+

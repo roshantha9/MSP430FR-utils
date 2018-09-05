@@ -5,8 +5,11 @@
  *      Author: Rosh
  */
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#ifndef COMMON_H_
+#define COMMON_H_
+
+
+
 
 
 /* Testbench options */
@@ -15,7 +18,11 @@
 #define TB_BUTTON           1
 
 
+/* LED for MSP430FR5994 launchpad */
+#define LED1        BIT0
+#define LED2        BIT1
+#define LED_OUT     P1OUT
+#define LED_DIR     P1DIR
 
 
-
-#endif /* CONFIG_H_ */
+#endif /* COMMON_H_ */

@@ -147,3 +147,54 @@ void Stopwatch_overflow_ISR (void){
 #endif
 
 
+
+
+/*******************************************************
+ * TESTBENCH: Stopwatch
+ *******************************************************/
+#if TB_STOPWATCH
+void testStopwatch(){
+    printf("testStopwatch:: Enter\n");
+    Stopwatch_init();
+
+    // short delay
+    Stopwatch_start();
+    __delay_cycles(50);
+    Stopwatch_stop();
+    printf("testStopwatch:: elapsed clock cycles: %lu\n", Stopwatch_getElapsedClockCycles());
+    Stopwatch_reset();
+
+    // med delay
+    Stopwatch_start();
+    __delay_cycles(5000);
+    Stopwatch_stop();
+    printf("testStopwatch:: elapsed clock cycles: %lu\n", Stopwatch_getElapsedClockCycles());
+    Stopwatch_reset();
+
+    // long delay
+    Stopwatch_start();
+    __delay_cycles(50000);
+    Stopwatch_stop();
+    printf("testStopwatch:: elapsed clock cycles: %lu\n", Stopwatch_getElapsedClockCycles());
+    Stopwatch_reset();
+
+
+    // very-long delay
+    Stopwatch_start();
+    __delay_cycles(100000);
+    Stopwatch_stop();
+    printf("testStopwatch:: elapsed clock cycles: %lu\n", Stopwatch_getElapsedClockCycles());
+    Stopwatch_reset();
+
+
+    // very-long delay
+    Stopwatch_start();
+    __delay_cycles(500000);
+    Stopwatch_stop();
+    printf("testStopwatch:: elapsed clock cycles: %lu\n", Stopwatch_getElapsedClockCycles());
+    Stopwatch_reset();
+
+    printf("testStopwatch:: Exit\n");
+}
+#endif
+

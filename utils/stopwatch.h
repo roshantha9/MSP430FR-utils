@@ -10,6 +10,7 @@
 
 #include "stdint.h"
 #include <msp430.h>
+#include "../common.h"
 
 #define SW_ENABLE              1
 
@@ -37,6 +38,12 @@ extern uint32_t Stopwatch_getElapsedClockCycles(void);
 //extern uint32_t Stopwatch_getElapsedRealTime(void); // in ms
 
 uint32_t Stopwatch_getClockFreq(void);
+
+// testbench
+#if TB_STOPWATCH
+void testStopwatch(void);
+#endif
+
 
 
 /* debug printing */

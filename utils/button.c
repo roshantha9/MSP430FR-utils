@@ -71,3 +71,19 @@ __interrupt void Button_S1_ISR(void)
         break;
     }
 }
+
+
+
+/*******************************************************
+ * TESTBENCH: Button
+ *******************************************************/
+#if TB_BUTTON
+void testButton_S1(){
+    Button_S1_init(&testButton_S1_ISR);
+}
+
+void testButton_S1_ISR(){
+    LED_OUT ^= LED1 + LED2; // Toggle the LEDs
+    P6OUT ^= BIT0; // toggle port output
+}
+#endif

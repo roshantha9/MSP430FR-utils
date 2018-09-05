@@ -10,7 +10,7 @@
 
 #include "stdint.h"
 #include <msp430.h>
-
+#include "../common.h"
 
 #define TIMER_PERIODIC_ENABLE        0
 
@@ -31,6 +31,12 @@ void (*TimerPeriodic_Callback)(void);
 
 uint32_t getClockCycles(uint16_t p);
 uint8_t getPrescaler(uint16_t p, uint32_t clk);
+
+// testbench
+#if TB_TIMER
+void testTimerPeriodic(void);
+void testTimerPeriodic_ISR(void);
+#endif
 
 
 #endif /* UTILS_TIMER_PERIODIC_H_ */
